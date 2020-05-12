@@ -1,22 +1,23 @@
-function spinodal_decomposition(D,gamma,dt,gridSize,numIterations,captureMode)
+function spinodal_decomposition(D,gamma,dt,gridSize,numIterations,captureMode,imgStyle)
 % Generates Cahn-Hilliard Phase Separation Model, Exports Video
 % D: diffusion coefficient. Standard values is 10
 % gamma: sqrt(gamma) is the domain transition length. Standard value of 5
 % dt: time increment between iterations. Standard value of 0.005
 % gridSize: grid size. Standard values are 100, 200, 400
 % numIterations: number of iterations. Standard values between 5000, 25000
-% captureMode: "standard" - 25 iterations between frames
+% captureMode: "standard" - 25 iterations between frames (default)
 %              "incremental" - 1 iteration between frames, then 2, then 3...
+% imgStyle: "binary" - binarizes frames to black and white (default)
+%           "gradient" - shows full colormap range
 
 len = gridSize;
-% Random Starting Concentrations
+% Random Starting Concentrations (-1 and 1 represent different species)
 u = 2*randi(2,len)-3;
 
 colormap pink
 
 writer = VideoWriter('spinodal_decomposition.avi');
 open(writer);
-
 figure(1)
 image(u,'CDataMapping','scaled');
 frame = getframe(1);
@@ -31,8 +32,12 @@ for i = 1:numIterations
    % Incremental video mode
    if (captureMode == "incremental")
        if (count == frameStep)
-           uMod = round((u+1)/2);
-           image(uMod,'CDataMapping','scaled');
+           if (imgStyle == "gradient")
+               image(u,'CDataMapping','scaled');
+           else
+               uMod = round((u+1)/2); % Binarizes image
+               image(uMod,'CDataMapping','scaled');
+           end
            frame = getframe(1);
            writeVideo(writer,frame);
            count = 0;
@@ -42,12 +47,16 @@ for i = 1:numIterations
    % Standard video mode
    else
        if (mod(i,10) == 0)
-       uMod = round((u+1)/2);
-       image(uMod,'CDataMapping','scaled');
-       frame = getframe(1);
-       writeVideo(writer,frame);
+           if (imgStyle == "gradient")
+               image(u,'CDataMapping','scaled');
+           else
+               uMod = round((u+1)/2);
+               image(uMod,'CDataMapping','scaled');
+           end
+           frame = getframe(1);
+           writeVideo(writer,frame);
        end
-   end 
+   end
 end
 
 close(writer);
