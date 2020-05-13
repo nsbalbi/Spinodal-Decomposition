@@ -19,7 +19,7 @@ for i = 1:len
       elseif dInd > len
          dInd = 1; 
       end
-      arrOut(i,j) = -1*arrIn(i,j)+0.2*(arrIn(lInd,j)+arrIn(rInd,j)+arrIn(i,uInd)+arrIn(i,dInd))+0.05*(arrIn(lInd,uInd)+arrIn(rInd,uInd)+arrIn(lInd,dInd)+arrIn(rInd,dInd));
+      arrOut(i,j) = -1*arrIn(i,j)+0.25*(arrIn(lInd,j)+arrIn(rInd,j)+arrIn(i,uInd)+arrIn(i,dInd));
    end
 end
 end
